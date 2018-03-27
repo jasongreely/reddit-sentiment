@@ -27,13 +27,28 @@ def _main_():
     # Sort input prompt
     sort_required = True
     sort_input = None
+    time_filter_input = None
 
     while sort_required:
         sort_input = input("How would you like to sort? (hot/top): ")
 
         if sort_input and sort_input.lower() in ["hot", "top"]:
             sort_input = sort_input.lower()
-            sort_required = False
+            if sort_input == "top":
+
+                # Get time filter
+                time_filter_required = True
+
+                while time_filter_required:
+                    time_filter_input = input("\tSelect top posts from? (hour/day/week/month/year/all):")
+                    if time_filter_input and time_filter_input.lower() in ["hour", "day", "week", "month", "year", "all"]:
+                        time_filter_input = time_filter_input.lower()
+                        time_filter_required = False
+                        sort_required = False
+                    else:
+                        print("** Must enter one of the following values: hour, day, week, month, year, all **")
+            else:
+                sort_required = False
 
         else:
             print("** Must enter a value of hot or top **")
@@ -72,7 +87,7 @@ def _main_():
         subreddit = reddit.subreddit(subreddit_input).hot(limit=count_input)
     else:
         if sort_input == "top":
-            subreddit = reddit.subreddit(subreddit_input).top(limit=count_input)
+            subreddit = reddit.subreddit(subreddit_input).top(limit=count_input,time_filter=time_filter_input)
 
     if subreddit is not None:
         process_subreddit(subreddit, subreddit_input, path_input)
