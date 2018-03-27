@@ -3,25 +3,63 @@ import praw_config
 import re
 from textblob import TextBlob
 
-TARGET_SUB = "nfl"
-TARGET_SORT = "hot"
-TARGET_COUNT = 25
-
 
 def _main_():
-    reddit = praw.Reddit(user_agent=praw_config.user_agent,
+    reddit = reddit = praw.Reddit(user_agent=praw_config.user_agent,
                          client_id=praw_config.client_id, client_secret=praw_config.client_secret,
                          username=praw_config.username, password=praw_config.password)
 
+    # Subreddit Input Prompt
+    subreddit_required = True
+    subreddit_input = None
+
+    while subreddit_required:
+        subreddit_input = input("Analyze which Subreddit?")
+
+        if subreddit_input:
+            subreddit_required = False
+        else:
+            print("** Must enter a value **")
+
+    # Sort input prompt
+    sort_required = True
+    sort_input = None
+
+    while sort_required:
+        sort_input = input("How would you like to sort? (hot/top)")
+
+        if sort_input and sort_input.lower() in ["hot", "top"]:
+            sort_input = sort_input.lower()
+            sort_required = False
+
+        else:
+            print("** Must enter a value of hot or top **")
+
+
+    # Limit input prompt
+    count_required = True
+    count_input = 0
+
+    while count_required:
+        try:
+            count_input = int(input("How many posts would you like to analyze?"))
+
+            if count_input <= 0:
+                print("** Input must be a whole number greater than zero **")
+            else:
+                count_required = False
+        except ValueError:
+            print("** Input must be a whole number greater than zero")
+
+
+    # Retrieve Subreddit
     subreddit = None
 
-    if TARGET_SORT == "hot":
-        subreddit = reddit.subreddit(TARGET_SUB).hot(limit=TARGET_COUNT)
+    if sort_input == "hot":
+        subreddit = reddit.subreddit(subreddit_input).hot(limit=count_input)
     else:
-        if TARGET_SORT == "top":
-            subreddit = reddit.subreddit(TARGET_SUB).top(limit=TARGET_COUNT)
-        else:
-            print("Target sort is invalid")
+        if sort_input == "top":
+            subreddit = reddit.subreddit(subreddit_input).top(limit=count_input)
 
     if subreddit is not None:
         process_subreddit(subreddit)
