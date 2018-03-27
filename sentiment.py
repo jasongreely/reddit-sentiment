@@ -81,7 +81,7 @@ def _main_():
 
 
 def process_subreddit(subreddit, subreddit_name, path):
-    file_path = path + subreddit_name + "_analysis_" + str(calendar.timegm(time.gmtime())) + ".csv"
+    file_path = path + "reddit_" + subreddit_name + "_analysis_" + str(calendar.timegm(time.gmtime())) + ".csv"
 
     with open(file_path, "w", newline="") as csvfile:
         field_names = ["submission_id", "submission_title", "total_comments", "positive_comments", "neutral_comments",
