@@ -8,7 +8,7 @@ TARGET_SORT = "hot"
 TARGET_COUNT = 25
 
 
-def main():
+def _main_():
     reddit = praw.Reddit(user_agent=praw_config.user_agent,
                          client_id=praw_config.client_id, client_secret=praw_config.client_secret,
                          username=praw_config.username, password=praw_config.password)
@@ -65,4 +65,4 @@ def analyze_comment(comment):
     return analysis.sentiment.polarity
 
 
-main()
+_main_()
