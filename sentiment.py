@@ -1,9 +1,11 @@
 import praw
 import praw_config
+import re
+from textblob import TextBlob
 
 TARGET_SUB = "nfl"
 TARGET_SORT = "hot"
-TARGET_COUNT = 10
+TARGET_COUNT = 1
 
 
 def main():
@@ -29,7 +31,21 @@ def main():
 
 def process_subreddit(subreddit):
     for submission in subreddit:
-        print(submission.title)
+        print("Processing post: {}".format(submission.title))
+
+        for comment in submission.comments:
+            print("Processing comment: {}".format(comment.id))
+            analyze_comment(comment)
+
+
+def clean_comment(comment):
+    return ' '.join(re.sub("(@[A-Za-z0-9]+)|([^0-9A-Za-z \t])| (\w+:\ / \ / \S+)", " ", comment).split())
+
+
+def analyze_comment(comment):
+    analysis = TextBlob(clean_comment(comment.body))
+
+    print(analysis.sentiment.polarity)
 
 
 main()
