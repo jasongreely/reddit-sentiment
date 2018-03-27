@@ -120,7 +120,7 @@ def process_subreddit(subreddit, subreddit_name, path):
                 "negative_comments" : neg
             })
 
-            print("#{} | {} | {} positive, {} neutral, {} negative".format(submission.id, submission.title, pos, neu, neg))
+            print("Success: CSV created in {}".format(file_path))
 
 
 def clean_comment(comment):

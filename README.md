@@ -3,7 +3,7 @@
 Utilizes [TextBlob](https://textblob.readthedocs.io/en/dev/) and [PRAW](http://praw.readthedocs.io/en/latest/index.html) 
 to retrieve and analyze subreddit submission comments
 
-Current output is limited to printed statements
+Results will output to a CSV file at a defined folder path
 
 ## Installation
 
@@ -45,6 +45,7 @@ Three prompts are then required:
 Analyze which Subreddit?: [Subreddit name]
 How would you like to sort? (hot/top): [Sort filter]
 How many posts would you like to analyze?: [Post count limit]
+Define the path for the CSV file: [/user/folder/path/]
 ```
 
 Results will be printed to the console:
