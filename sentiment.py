@@ -38,7 +38,6 @@ def _main_():
         else:
             print("** Must enter a value of hot or top **")
 
-
     # Limit input prompt
     count_required = True
     count_input = 0
