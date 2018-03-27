@@ -5,7 +5,7 @@ from textblob import TextBlob
 
 TARGET_SUB = "nfl"
 TARGET_SORT = "hot"
-TARGET_COUNT = 1
+TARGET_COUNT = 25
 
 
 def main():
@@ -33,9 +33,26 @@ def process_subreddit(subreddit):
     for submission in subreddit:
         print("Processing post: {}".format(submission.title))
 
-        for comment in submission.comments:
-            print("Processing comment: {}".format(comment.id))
-            analyze_comment(comment)
+        tot = 0
+
+        pos = 0
+        neu = 0
+        neg = 0
+
+        for comment in submission.comments.list():
+            tot += 1
+
+            if hasattr(comment, "body"):
+                polarity = analyze_comment(comment)
+
+                if polarity > 0:
+                    pos += 1
+                if polarity == 0:
+                    neu += 1
+                if polarity < 0:
+                    neg += 1
+
+        print("Analysis complete: {:.1%} positive, {:.1%} neutral, {:.1%} negative".format((pos/tot), (neu/tot), (neg/tot)))
 
 
 def clean_comment(comment):
@@ -45,7 +62,7 @@ def clean_comment(comment):
 def analyze_comment(comment):
     analysis = TextBlob(clean_comment(comment.body))
 
-    print(analysis.sentiment.polarity)
+    return analysis.sentiment.polarity
 
 
 main()
