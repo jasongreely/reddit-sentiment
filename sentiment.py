@@ -1,6 +1,9 @@
 import praw
 import praw_config
 import re
+import csv
+import calendar
+import time
 from textblob import TextBlob
 
 
@@ -51,6 +54,17 @@ def _main_():
         except ValueError:
             print("** Input must be a whole number greater than zero **")
 
+    # CSV Path input prompt
+    path_required = True
+    path_input = None
+
+    while path_required:
+        path_input = input("Define the path for the CSV file: ")
+
+        if path_input:
+            path_required = False
+        else:
+            print("** Input must not be blank **")
 
     # Retrieve Subreddit
     subreddit = None
@@ -62,33 +76,52 @@ def _main_():
             subreddit = reddit.subreddit(subreddit_input).top(limit=count_input)
 
     if subreddit is not None:
-        process_subreddit(subreddit)
+        process_subreddit(subreddit, subreddit_input, path_input)
     else:
         print("Subreddit could not be found")
 
 
-def process_subreddit(subreddit):
-    for submission in subreddit:
-        tot = 0
+def process_subreddit(subreddit, subreddit_name, path):
+    file_path = path + subreddit_name + "_analysis_" + str(calendar.timegm(time.gmtime())) + ".csv"
 
-        pos = 0
-        neu = 0
-        neg = 0
+    with open(file_path, "w", newline="") as csvfile:
+        field_names = ["submission_id", "submission_title", "total_comments", "positive_comments", "neutral_comments",
+                      "negative_comments"]
 
-        for comment in submission.comments.list():
-            tot += 1
+        writer = csv.DictWriter(csvfile, fieldnames=field_names)
 
-            if hasattr(comment, "body"):
-                polarity = analyze_comment(comment)
+        writer.writeheader()
 
-                if polarity > 0:
-                    pos += 1
-                if polarity == 0:
-                    neu += 1
-                if polarity < 0:
-                    neg += 1
+        for submission in subreddit:
+            tot = 0
 
-        print("#{} | {} | {} positive, {} neutral, {} negative".format(submission.id, submission.title, pos, neu, neg))
+            pos = 0
+            neu = 0
+            neg = 0
+
+            for comment in submission.comments.list():
+                tot += 1
+
+                if hasattr(comment, "body"):
+                    polarity = analyze_comment(comment)
+
+                    if polarity > 0:
+                        pos += 1
+                    if polarity == 0:
+                        neu += 1
+                    if polarity < 0:
+                        neg += 1
+
+            writer.writerow({
+                "submission_id" : submission.id,
+                "submission_title" : submission.title,
+                "total_comments" : tot,
+                "positive_comments" : pos,
+                "neutral_comments" : neu,
+                "negative_comments" : neg
+            })
+
+            print("#{} | {} | {} positive, {} neutral, {} negative".format(submission.id, submission.title, pos, neu, neg))
 
 
 def clean_comment(comment):
