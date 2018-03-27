@@ -3,7 +3,7 @@
 Utilizes [TextBlob](https://textblob.readthedocs.io/en/dev/) and [PRAW](http://praw.readthedocs.io/en/latest/index.html) 
 to retrieve and analyze subreddit submission comments
 
-Results will output to a CSV file at a defined folder path
+Results will output to a CSV file at a defined folder path for use in Excel or other reporting tools
 
 ## Installation
 
@@ -40,7 +40,7 @@ Run the program from console, terminal, or an IDE:
 python3 sentiment.py
 ```
 
-Three prompts are then required:
+Four prompts are then required:
 ```commandline
 Analyze which Subreddit?: [Subreddit name]
 How would you like to sort? (hot/top): [Sort filter]
@@ -51,7 +51,16 @@ Define the path for the CSV file: [/user/folder/path/]
 Results will be printed to the console:
 ```commandline
 Analyze which Subreddit?: news
-How would you like to sort? (hot/top): top
-How many posts would you like to analyze?: 1
-#84aebi | Scientist Stephen Hawking has died aged 76 | 727 positive, 484 neutral, 265 negative
+How would you like to sort? (hot/top): hot
+How many posts would you like to analyze?: 10
+Define the path for the CSV file: /path/to/folder/
+Success: CSV created in /path/to/folder/reddit_news_analysis_1522181235.csv
 ```
+
+The CSV includes:
+* Unique Submission ID
+* Submission title
+* Total (top level) comments
+* Total positive comments
+* Total neutral comments
+* Total negative comments
