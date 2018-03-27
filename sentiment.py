@@ -14,7 +14,7 @@ def _main_():
     subreddit_input = None
 
     while subreddit_required:
-        subreddit_input = input("Analyze which Subreddit?")
+        subreddit_input = input("Analyze which Subreddit?: ")
 
         if subreddit_input:
             subreddit_required = False
@@ -26,7 +26,7 @@ def _main_():
     sort_input = None
 
     while sort_required:
-        sort_input = input("How would you like to sort? (hot/top)")
+        sort_input = input("How would you like to sort? (hot/top): ")
 
         if sort_input and sort_input.lower() in ["hot", "top"]:
             sort_input = sort_input.lower()
@@ -42,14 +42,14 @@ def _main_():
 
     while count_required:
         try:
-            count_input = int(input("How many posts would you like to analyze?"))
+            count_input = int(input("How many posts would you like to analyze?: "))
 
             if count_input <= 0:
                 print("** Input must be a whole number greater than zero **")
             else:
                 count_required = False
         except ValueError:
-            print("** Input must be a whole number greater than zero")
+            print("** Input must be a whole number greater than zero **")
 
 
     # Retrieve Subreddit
@@ -69,8 +69,6 @@ def _main_():
 
 def process_subreddit(subreddit):
     for submission in subreddit:
-        print("Processing post: {}".format(submission.title))
-
         tot = 0
 
         pos = 0
@@ -90,7 +88,7 @@ def process_subreddit(subreddit):
                 if polarity < 0:
                     neg += 1
 
-        print("Analysis complete: {:.1%} positive, {:.1%} neutral, {:.1%} negative".format((pos/tot), (neu/tot), (neg/tot)))
+        print("#{} | {} | {} positive, {} neutral, {} negative".format(submission.id, submission.title, pos, neu, neg))
 
 
 def clean_comment(comment):
