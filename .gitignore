@@ -1,2 +1,5 @@
 # Reddit Credentials
 praw_config.py
+
+# PyCharm
+.idea/
