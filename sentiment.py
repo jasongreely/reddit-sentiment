@@ -4,6 +4,8 @@ import re
 import csv
 import calendar
 import time
+import os
+import sys
 from textblob import TextBlob
 
 
@@ -40,7 +42,7 @@ def _main_():
                 time_filter_required = True
 
                 while time_filter_required:
-                    time_filter_input = input("\tSelect top posts from? (hour/day/week/month/year/all):")
+                    time_filter_input = input("\tSelect top posts from? (hour/day/week/month/year/all): ")
                     if time_filter_input and time_filter_input.lower() in ["hour", "day", "week", "month", "year", "all"]:
                         time_filter_input = time_filter_input.lower()
                         time_filter_required = False
@@ -75,27 +77,32 @@ def _main_():
     while path_required:
         path_input = input("Define the path for the CSV file: ")
 
-        if path_input:
+        if path_input and os.path.isdir(path_input):
             path_required = False
         else:
-            print("** Input must not be blank **")
+            print("** {} is not a valid path **".format(path_input))
 
     # Retrieve Subreddit
     subreddit = None
 
     if sort_input == "hot":
+        print("\nAnalyzing {} {} posts from /r/{}\n".format(str(count_input), sort_input, subreddit_input))
         subreddit = reddit.subreddit(subreddit_input).hot(limit=count_input)
     else:
         if sort_input == "top":
+            print("\nAnalyzing {} {}:{} posts from /r/{}\n".format(str(count_input), sort_input, time_filter_input, subreddit_input))
             subreddit = reddit.subreddit(subreddit_input).top(limit=count_input,time_filter=time_filter_input)
 
     if subreddit is not None:
-        process_subreddit(subreddit, subreddit_input, path_input)
+        process_subreddit(subreddit, subreddit_input, path_input, count_input)
     else:
         print("Subreddit could not be found")
 
 
-def process_subreddit(subreddit, subreddit_name, path):
+def process_subreddit(subreddit, subreddit_name, path, count_input):
+    if not path.endswith("/"):
+        path = path + "/"
+
     file_path = path + "reddit_" + subreddit_name + "_analysis_" + str(calendar.timegm(time.gmtime())) + ".csv"
 
     with open(file_path, "w", newline="") as csvfile:
@@ -106,7 +113,9 @@ def process_subreddit(subreddit, subreddit_name, path):
 
         writer.writeheader()
 
-        for submission in subreddit:
+        for index, submission in enumerate(subreddit):
+            print_progress(index + 1, count_input)
+
             tot = 0
 
             pos = 0
@@ -135,7 +144,7 @@ def process_subreddit(subreddit, subreddit_name, path):
                 "negative_comments" : neg
             })
 
-        print("Success: CSV created in {}".format(file_path))
+        print("\nSuccess: CSV created in {}".format(file_path))
 
 
 def clean_comment(comment):
@@ -146,6 +155,20 @@ def analyze_comment(comment):
     analysis = TextBlob(clean_comment(comment.body))
 
     return analysis.sentiment.polarity
+
+
+def print_progress(iteration, total, prefix='', suffix='', decimals=1, bar_length=70):
+
+    str_format = "{0:." + str(decimals) + "f}"
+    percents = str_format.format(100 * (iteration / float(total)))
+    filled_length = int(round(bar_length * iteration / float(total)))
+    bar = '█' * filled_length + '-' * (bar_length - filled_length)
+
+    sys.stdout.write('\r%s |%s| %s%s %s' % (prefix, bar, percents, '%', suffix)),
+
+    if iteration == total:
+        sys.stdout.write('\n')
+    sys.stdout.flush()
 
 
 _main_()

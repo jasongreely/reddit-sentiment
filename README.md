@@ -40,10 +40,11 @@ Run the program from console, terminal, or an IDE:
 python3 sentiment.py
 ```
 
-Four prompts are then required:
+Prompts are then required:
 ```commandline
 Analyze which Subreddit?: [Subreddit name]
 How would you like to sort? (hot/top): [Sort filter]
+<<IF TOP SELECTED>> Select top posts from? (hour/day/week/month/year/all): [Time filter]
 How many posts would you like to analyze?: [Post count limit]
 Define the path for the CSV file: [/user/folder/path/]
 ```
@@ -51,10 +52,16 @@ Define the path for the CSV file: [/user/folder/path/]
 Results will be printed to the console:
 ```commandline
 Analyze which Subreddit?: news
-How would you like to sort? (hot/top): hot
-How many posts would you like to analyze?: 10
-Define the path for the CSV file: /path/to/folder/
-Success: CSV created in /path/to/folder/reddit_news_analysis_1522181235.csv
+How would you like to sort? (hot/top): top
+	Select top posts from? (hour/day/week/month/year/all): week
+How many posts would you like to analyze?: 15
+Define the path for the CSV file: /user/folder/path
+ 
+Analyzing 15 top:week posts from /r/news
+ 
+ |██████████████████████████████████████████████████████████████████████| 100.0% 
+ 
+Success: CSV created in /user/folder/path/reddit_news_analysis_1522247876.csv
 ```
 
 The CSV includes:
