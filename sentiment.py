@@ -144,7 +144,10 @@ def process_subreddit(subreddit, subreddit_name, path, count_input):
                 "negative_comments" : neg
             })
 
-        print("\nSuccess: CSV created in {}".format(file_path))
+        if os.path.isfile(file_path):
+            print("\nSuccess: CSV created in {}".format(file_path))
+        else:
+            print("\nError occurred while generating CSV file.")
 
 
 def clean_comment(comment):
